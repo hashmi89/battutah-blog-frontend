@@ -2,56 +2,65 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
-import WORDPRESS_API_BASE from './config';
+// This hook lets us read parameters (like the slug) from the URL
+import { useParams } from 'react-router-dom'; 
+import API_BASE_URL from './config'; 
 
-const PostDetail = () => {
-  // useParams() gets the 'id' from the route path: /post/:id
-  const { id } = useParams();
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+function PostDetail() {
+    // The useParams hook extracts variables defined in the route path (e.g., /post/:slug)
+    const { slug } = useParams(); 
+    const [post, setPost] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const postUrl = `${WORDPRESS_API_BASE}/posts/${id}`;
+    useEffect(() => {
+        // Stop fetching if no slug is present
+        if (!slug) {
+            setError('No post slug provided.');
+            setLoading(false);
+            return;
+        }
 
-    axios.get(postUrl)
-      .then(response => {
-        setPost(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error(`Error fetching post ${id}:`, error);
-        setLoading(false);
-      });
-  }, [id]); // Rerun the effect if the ID changes
+        const postUrl = `${API_BASE_URL}/posts/slug/${slug}`;
 
-  if (loading) {
-    return <div>Loading post content...</div>;
-  }
+        axios.get(postUrl)
+            .then(response => {
+                // The Express API returns the single post object directly
+                setPost(response.data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Error fetching post:", err);
+                // Check for a 404 error (post not found)
+                if (err.response && err.response.status === 404) {
+                    setError('The requested blog post was not found.');
+                } else {
+                    setError('Failed to load the blog post details.');
+                }
+                setLoading(false);
+            });
+    }, [slug]); // Re-run effect if the slug changes
 
-  if (!post) {
-    return <div>Post not found.</div>;
-  }
+    if (loading) return <div className="loading">Loading post...</div>;
+    if (error) return <div className="error">{error}</div>;
 
-  return (
-    <div className="post-detail-container" style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <Link to="/" style={{ textDecoration: 'none', color: 'blue' }}>&laquo; Back to All Posts</Link>
-      
-      {/* Title */}
-      <h1 dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-      
-      {/* Post Content (The full body of the blog post) */}
-      <div 
-        className="post-content" 
-        dangerouslySetInnerHTML={{ __html: post.content.rendered }} 
-        style={{ lineHeight: '1.6', fontSize: '1.1em' }}
-      />
-      
-      <p style={{ marginTop: '30px', borderTop: '1px solid #eee', paddingTop: '10px' }}>
-        Published on: {new Date(post.date).toLocaleDateString()}
-      </p>
-    </div>
-  );
-};
+    // Render the post if it exists
+    return (
+        <div className="post-detail-container">
+            {post ? (
+                <>
+                    <h1>{post.title}</h1>
+                    <p className="post-date">Published: {new Date(post.date).toLocaleDateString()}</p>
+                    {/* Render the full content of the post */}
+                    <div className="post-content">
+                        <p>{post.content}</p>
+                    </div>
+                </>
+            ) : (
+                <div className="error">Post content is unavailable.</div>
+            )}
+        </div>
+    );
+}
 
 export default PostDetail;

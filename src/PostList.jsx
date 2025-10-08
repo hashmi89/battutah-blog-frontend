@@ -2,58 +2,55 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import WORDPRESS_API_BASE from './config';
-import { Link } from 'react-router-dom'; // Use Link for navigation
+import API_BASE_URL from './config'; // Import the new base URL
 
-const PostList = () => {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
+function PostList() {
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    // ?_embed is an essential parameter to include media, author, etc.
-    const postsUrl = `${WORDPRESS_API_BASE}/posts?_embed`;
+    useEffect(() => {
+        // Construct the full API endpoint
+        const postsUrl = `${API_BASE_URL}/posts`; 
+        
+        axios.get(postsUrl)
+            .then(response => {
+                // The Express API returns the post array directly
+                // So no need for complex mapping like with some CMS structures
+                setPosts(response.data); 
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error("Error fetching posts:", err);
+                setError("Failed to load blog posts.");
+                setLoading(false);
+            });
+    }, []);
 
-    axios.get(postsUrl)
-      .then(response => {
-        setPosts(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error("Error fetching posts:", error);
-        setLoading(false);
-      });
-  }, []);
+    // --- Rendering Logic ---
 
-  if (loading) {
-    return <div>Loading blog posts from WordPress...</div>;
-  }
+    if (loading) return <div className="loading">Loading posts...</div>;
+    if (error) return <div className="error">{error}</div>;
 
-  return (
-    <div className="post-list-container">
-      <h1>Latest Blog Posts</h1>
-      {posts.map(post => (
-        <article key={post.id} className="post-card" style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '15px' }}>
-          {/* Post Title */}
-          <h2>{post.title.rendered}</h2>
-
-          {/* Post Excerpt (Must use dangerouslySetInnerHTML for CMS content) */}
-          <div
-            className="post-excerpt"
-            dangerouslySetInnerHTML={{ __html: post.excerpt.rendered }}
-          />
-
-          {/* Link to the individual post detail page */}
-          <Link to={`/post/${post.id}`} style={{ display: 'inline-block', marginTop: '10px', textDecoration: 'none', color: 'blue' }}>
-            Read More &raquo;
-          </Link>
-
-          <p style={{ fontSize: '0.8em', color: '#666' }}>
-            Published: {new Date(post.date).toLocaleDateString()}
-          </p>
-        </article>
-      ))}
-    </div>
-  );
-};
+    return (
+        <div className="post-list-container">
+            <h1>Latest Blog Posts</h1>
+            {posts.length === 0 ? (
+                <p>No posts found. Use Postman to add some!</p>
+            ) : (
+                posts.map(post => (
+                    // Use a unique key for each item
+                    <div key={post._id} className="post-card">
+                        <h2>{post.title}</h2>
+                        {/* Express API uses 'content', we'll truncate it for the list */}
+                        <p>{post.content.substring(0, 150)}...</p> 
+                        <a href={`/post/${post.slug}`}>Read More</a> 
+                        <p className="post-date">Published: {new Date(post.date).toLocaleDateString()}</p>
+                    </div>
+                ))
+            )}
+        </div>
+    );
+}
 
 export default PostList;
