@@ -1,29 +1,38 @@
 // This file defines the routes for the application.
 
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import PostList from './PostList';     // Already created
-import PostDetail from './PostDetail'; // The new component
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import PostDetail from './pages/PostDetail';
+import AdminLogin from './pages/AdminLogin';
+import NewPost from './pages/NewPost';
+import ProtectedRoute from './components/ProtectedRoute';
+import Navbar from './components/Navbar';
+
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <header>
-          {/* Add a simple navigation link back to the list */}
-          <a href="/">Home (Blog List)</a>
-        </header>
-        <main>
-          <Routes>
-            {/* Route for the main blog list (homepage) */}
-            <Route path="/" element={<PostList />} />
+    <>
+      <Navbar />
+      <div className="container">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/post/:slug" element={<PostDetail />} />
+          <Route path="/admin/login" element={<AdminLogin />} /> 
+          
+          {/* 3. Wrap the New Post route with the ProtectedRoute component */}
+          <Route 
+            path="/admin/new-post" 
+            element={
+              <ProtectedRoute>
+                <NewPost />
+              </ProtectedRoute>
+            } 
+          />
 
-            {/* NEW ROUTE: Route for individual posts, using the :slug parameter */}
-            <Route path="/post/:slug" element={<PostDetail />} /> 
-          </Routes>
-        </main>
+          <Route path="*" element={<h1>404 Not Found</h1>} />
+        </Routes>
       </div>
-    </Router>
+    </>
   );
 }
 

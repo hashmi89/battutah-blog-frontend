@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 // This hook lets us read parameters (like the slug) from the URL
 import { useParams } from 'react-router-dom'; 
-import API_BASE_URL from './config'; 
+import API_BASE_URL from '../config'; 
 
 function PostDetail() {
     // The useParams hook extracts variables defined in the route path (e.g., /post/:slug)
