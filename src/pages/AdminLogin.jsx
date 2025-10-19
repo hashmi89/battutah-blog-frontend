@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Form, Button, Alert } from 'react-bootstrap';
 
 // IMPORTANT: Define your live Render API base URL
 const API_BASE_URL = 'https://battutah-blog-api.onrender.com';
@@ -43,34 +44,44 @@ const AdminLogin = () => {
     }
   };
 
-  return (
-    <div className="login-container">
-      <h2>Admin Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Log In</button>
-      </form>
-    </div>
+return (
+  <div className="login-container">
+    <h2 className="mb-4">Admin Login</h2> {/* mb-4 adds margin below heading */}
+    <Form onSubmit={handleSubmit}>
+      
+      {/* Username Field */}
+      <Form.Group className="mb-3" controlId="formBasicUsername">
+        <Form.Label>Username</Form.Label>
+        <Form.Control
+          type="text"
+          placeholder="Enter username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+      </Form.Group>
+
+      {/* Password Field */}
+      <Form.Group className="mb-3" controlId="formBasicPassword">
+        <Form.Label>Password</Form.Label>
+        <Form.Control
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </Form.Group>
+
+      {/* Error Message using Bootstrap Alert */}
+      {error && <Alert variant="danger">{error}</Alert>}
+      
+      {/* Submit Button */}
+      <Button variant="primary" type="submit">
+        Log In
+      </Button>
+    </Form>
+  </div>
   );
 };
 

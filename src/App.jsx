@@ -7,13 +7,14 @@ import AdminLogin from './pages/AdminLogin';
 import NewPost from './pages/NewPost';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
+import { Container } from 'react-bootstrap';
 
 
 function App() {
   return (
     <>
       <Navbar />
-      <div className="container">
+      <Container className="my-4">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/post/:slug" element={<PostDetail />} />
@@ -31,7 +32,7 @@ function App() {
 
           <Route path="*" element={<h1>404 Not Found</h1>} />
         </Routes>
-      </div>
+      </Container>
     </>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { Form, Button, Alert } from 'react-bootstrap';
 
 // IMPORTANT: Define your live Render API base URL
 const API_BASE_URL = 'https://battutah-blog-api.onrender.com';
@@ -52,32 +53,43 @@ const NewPost = () => {
 
     return (
         <div className="new-post-container">
-            <h2>Create New Blog Post</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label htmlFor="title">Title</label>
-                    <input
+            <h2 className="mb-4">Create New Blog Post</h2> {/* mb-4 adds margin */}
+            <Form onSubmit={handleSubmit}>
+                
+                {/* Title Field */}
+                <Form.Group className="mb-3" controlId="formPostTitle">
+                    <Form.Label>Title</Form.Label>
+                    <Form.Control
                         type="text"
-                        id="title"
+                        placeholder="Enter post title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         required
                     />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="content">Content</label>
-                    <textarea
-                        id="content"
+                </Form.Group>
+
+                {/* Content Field (Textarea) */}
+                <Form.Group className="mb-4" controlId="formPostContent">
+                    <Form.Label>Content</Form.Label>
+                    <Form.Control
+                        as="textarea" // Use 'as="textarea"' for multiline input
+                        placeholder="Write your blog content here..."
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        rows="10"
+                        rows={15} // Increase rows for a better writing experience
                         required
                     />
-                </div>
-                {message && <p style={{ color: 'green' }}>{message}</p>}
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <button type="submit">Publish Post</button>
-            </form>
+                </Form.Group>
+
+                {/* Status Messages using Bootstrap Alert */}
+                {message && <Alert variant="success">{message}</Alert>}
+                {error && <Alert variant="danger">{error}</Alert>}
+                
+                {/* Submit Button */}
+                <Button variant="primary" type="submit">
+                    Publish Post
+                </Button>
+            </Form>
         </div>
     );
 };

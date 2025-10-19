@@ -1,37 +1,31 @@
-// This component handles fetching and displaying the content for a single post using the ID from the URL.
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-// This hook lets us read parameters (like the slug) from the URL
-import { useParams } from 'react-router-dom'; 
+import { useParams } from 'react-router-dom';
+import { Container, Spinner, Alert } from 'react-bootstrap'; 
 import API_BASE_URL from '../config'; 
 
 function PostDetail() {
-    // The useParams hook extracts variables defined in the route path (e.g., /post/:slug)
-    const { slug } = useParams(); 
+    const { slug } = useParams();
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Stop fetching if no slug is present
         if (!slug) {
             setError('No post slug provided.');
             setLoading(false);
             return;
         }
 
-        const postUrl = `${API_BASE_URL}/posts/slug/${slug}`;
+        const postUrl = `${API_BASE_URL}/posts/slug/${slug}`; 
 
         axios.get(postUrl)
             .then(response => {
-                // The Express API returns the single post object directly
                 setPost(response.data);
                 setLoading(false);
             })
             .catch(err => {
                 console.error("Error fetching post:", err);
-                // Check for a 404 error (post not found)
                 if (err.response && err.response.status === 404) {
                     setError('The requested blog post was not found.');
                 } else {
@@ -39,27 +33,64 @@ function PostDetail() {
                 }
                 setLoading(false);
             });
-    }, [slug]); // Re-run effect if the slug changes
+    }, [slug]);
 
-    if (loading) return <div className="loading">Loading post...</div>;
-    if (error) return <div className="error">{error}</div>;
+    // --- Loading State (Bootstrap Spinner) ---
+    if (loading) {
+        return (
+            <Container className="text-center my-5">
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading post...</span>
+                </Spinner>
+            </Container>
+        );
+    }
 
-    // Render the post if it exists
+    // --- Error State (Bootstrap Alert) ---
+    if (error) {
+        return (
+            <Container className="my-5">
+                <Alert variant="danger">{error}</Alert>
+            </Container>
+        );
+    }
+
+    // Handle case where post is null but no error was set (shouldn't happen with the error check above, but good safeguard)
+    if (!post) {
+        return (
+            <Container className="my-5">
+                <Alert variant="warning">Post content is unavailable.</Alert>
+            </Container>
+        );
+    }
+
+    // --- Full Post View with Bootstrap Styling ---
     return (
-        <div className="post-detail-container">
-            {post ? (
-                <>
-                    <h1>{post.title}</h1>
-                    <p className="post-date">Published: {new Date(post.date).toLocaleDateString()}</p>
-                    {/* Render the full content of the post */}
-                    <div className="post-content">
-                        <p>{post.content}</p>
-                    </div>
-                </>
-            ) : (
-                <div className="error">Post content is unavailable.</div>
-            )}
-        </div>
+        <Container className="my-5">
+            <header className="mb-4 pb-3 border-bottom">
+                {/* Use Bootstrap headings and utility classes */}
+                <h1 className="display-4 fw-bold">{post.title}</h1> 
+                
+                <p className="text-muted lead">
+                    Published: {new Date(post.date).toLocaleDateString()}
+                </p>
+            </header>
+            
+            <main>
+                <div 
+                    className="post-content fs-5" 
+                    // Ensures line breaks are preserved for readability of raw text content
+                    style={{ whiteSpace: 'pre-wrap' }} 
+                >
+                    {/* Render the full content */}
+                    {post.content}
+                </div>
+            </main>
+            
+            <footer className="mt-5 pt-3 border-top">
+                <p className="text-muted">Thank you for reading!</p>
+            </footer>
+        </Container>
     );
 }
 
