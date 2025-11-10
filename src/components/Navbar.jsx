@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Navbar as BNavbar, Nav, Container, Button } from 'react-bootstrap'; 
+import { Navbar as BNavbar, Nav, Container, Button } from 'react-bootstrap';
 
 const Navbar = () => {
     const { isLoggedIn, logout } = useAuth();
@@ -23,6 +23,7 @@ const Navbar = () => {
                     <Nav className="ms-auto"> {/* ms-auto pushes links to the right */}
                         {/* Always show Home Link */}
                         <Nav.Link as={Link} to="/">Home</Nav.Link>
+                        <Nav.Link as={Link} to="/about">About</Nav.Link>
 
                         {/* Conditional Admin Links */}
                         {isLoggedIn ? (

@@ -6,6 +6,7 @@ import NewPost from './pages/NewPost';
 import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import { Container } from 'react-bootstrap';
+import { About } from './pages/About';
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <Container fluid className="my-4">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/post/:slug" element={<PostDetail />} />
           <Route path="/admin/login" element={<AdminLogin />} /> 
           <Route 
