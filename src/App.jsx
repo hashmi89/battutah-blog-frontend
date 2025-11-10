@@ -1,5 +1,3 @@
-// This file defines the routes for the application.
-
 import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import PostDetail from './pages/PostDetail';
@@ -19,8 +17,6 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/post/:slug" element={<PostDetail />} />
           <Route path="/admin/login" element={<AdminLogin />} /> 
-          
-          {/* 3. Wrap the New Post route with the ProtectedRoute component */}
           <Route 
             path="/admin/new-post" 
             element={
@@ -29,7 +25,6 @@ function App() {
               </ProtectedRoute>
             } 
           />
-
           <Route path="*" element={<h1>404 Not Found</h1>} />
         </Routes>
       </Container>
