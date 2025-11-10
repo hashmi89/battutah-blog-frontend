@@ -15,7 +15,7 @@ const Navbar = () => {
     return (
         // Use the Bootstrap Navbar component
         <BNavbar bg="dark" variant="dark" expand="lg">
-            <Container fluid>
+            <Container>
                 {/* Use Link inside Navbar.Brand */}
                 <BNavbar.Brand as={Link} to="/">Battutah</BNavbar.Brand>
                 <BNavbar.Toggle aria-controls="basic-navbar-nav" />

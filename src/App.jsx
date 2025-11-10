@@ -14,7 +14,7 @@ function App() {
   return (
     <>
       <Navbar />
-      <Container className="my-4">
+      <Container fluid className="my-4">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/post/:slug" element={<PostDetail />} />
