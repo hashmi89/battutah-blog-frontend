@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Container, Spinner, Alert } from 'react-bootstrap'; 
+import { Container, Spinner, Alert, Card } from 'react-bootstrap'; 
+import API_BASE_URL from '../config';
 
-const API_BASE_URL = 'https://battutah-blog-api.onrender.com'; 
 
 function PostDetail() {
     const { slug } = useParams();
@@ -18,6 +18,7 @@ function PostDetail() {
             return;
         }
 
+        // Fetching by slug is already implemented correctly here
         const postUrl = `${API_BASE_URL}/posts/slug/${slug}`; 
 
         axios.get(postUrl)
@@ -56,7 +57,7 @@ function PostDetail() {
         );
     }
 
-    // Handle case where post is null but no error was set (shouldn't happen with the error check above, but good safeguard)
+    // Handle case where post is null but no error was set
     if (!post) {
         return (
             <Container className="my-5">
@@ -65,32 +66,41 @@ function PostDetail() {
         );
     }
 
+    // Function to format the date
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Unknown Date';
+        // Note: Using 'date' property from your existing file, assuming it's the right date field
+        return new Date(dateString).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    };
+    
     // --- Full Post View with Bootstrap Styling ---
     return (
         <Container className="my-5">
-            <header className="mb-4 pb-3 border-bottom">
-                {/* Use Bootstrap headings and utility classes */}
-                <h1 className="display-4 fw-bold">{post.title}</h1> 
+            <Card className="shadow-lg p-4">
+                <header className="mb-4 pb-3 border-bottom">
+                    {/* Use Bootstrap headings and utility classes */}
+                    <h1 className="display-4 fw-bold">{post.title}</h1> 
+                    
+                    <p className="text-muted lead">
+                        Published: {formatDate(post.date)}
+                    </p>
+                </header>
                 
-                <p className="text-muted lead">
-                    Published: {new Date(post.date).toLocaleDateString()}
-                </p>
-            </header>
-            
-            <main>
-                <div 
-                    className="post-content fs-5" 
-                    // Ensures line breaks are preserved for readability of raw text content
-                    style={{ whiteSpace: 'pre-wrap' }} 
-                >
-                    {/* Render the full content */}
-                    {post.content}
-                </div>
-            </main>
-            
-            <footer className="mt-5 pt-3 border-top">
-                <p className="text-muted">Thank you for reading!</p>
-            </footer>
+                <main>
+                    <div 
+                        className="post-content fs-5" 
+                        dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
+                </main>
+                
+                <footer className="mt-5 pt-3 border-top">
+                    <p className="text-muted">Thank you for reading!</p>
+                </footer>
+            </Card>
         </Container>
     );
 }

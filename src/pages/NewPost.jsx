@@ -1,9 +1,22 @@
-import React, { useState } from 'react';
+import ReactQuill from 'react-quill-new'; 
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Form, Button, Alert } from 'react-bootstrap';
+import 'react-quill-new/dist/quill.snow.css';
 
 // IMPORTANT: Define your live Render API base URL
 const API_BASE_URL = 'https://battutah-blog-api.onrender.com';
+
+// Modules object to customize the WYSIWYG toolbar
+const modules = {
+    toolbar: [
+        [{ 'header': [1, 2, false] }],
+        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+        [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+        ['link', 'image'],
+        ['clean']
+    ],
+};
 
 const NewPost = () => {
     const [title, setTitle] = useState('');
@@ -71,13 +84,13 @@ const NewPost = () => {
                 {/* Content Field (Textarea) */}
                 <Form.Group className="mb-4" controlId="formPostContent">
                     <Form.Label>Content</Form.Label>
-                    <Form.Control
-                        as="textarea" // Use 'as="textarea"' for multiline input
-                        placeholder="Write your blog content here..."
+                    <ReactQuill 
+                        theme="snow"
                         value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        rows={15} // Increase rows for a better writing experience
-                        required
+                        onChange={setContent}
+                        modules={modules}
+                        placeholder="Enter post body"
+                        style={{ height: '300px', marginBottom: '40px' }}
                     />
                 </Form.Group>
 
