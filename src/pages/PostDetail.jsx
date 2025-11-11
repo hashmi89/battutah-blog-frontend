@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { Container, Spinner, Alert } from 'react-bootstrap'; 
-import API_BASE_URL from '../config'; 
+
+const API_BASE_URL = 'https://battutah-blog-api.onrender.com'; 
 
 function PostDetail() {
     const { slug } = useParams();
