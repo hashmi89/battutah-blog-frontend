@@ -44,7 +44,7 @@ function PostList() {
                         <h2>{post.title}</h2>
                         {/* Express API uses 'content', we'll truncate it for the list */}
                         <p>{post.content.substring(0, 150)}...</p> 
-                        <a href={`/post/${post.slug}`}>Read More</a> 
+                        <a href={`/posts/${post.slug}`}>Read More</a> 
                         <p className="post-date">Published: {new Date(post.date).toLocaleDateString()}</p>
                     </div>
                 ))

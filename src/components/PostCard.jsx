@@ -55,7 +55,7 @@ const PostCard = ({ post }) => {
             <Card className="h-100 shadow-sm">
                 <Card.Body>
                     {/* Link to the post detail page using the slug */}
-                    <Card.Title as={Link} to={`/post/${post.slug}`} className="text-decoration-none text-primary fw-bold">
+                    <Card.Title as={Link} to={`/posts/${post.slug}`} className="text-decoration-none text-primary fw-bold">
                         {post.title}
                     </Card.Title>
                     <Card.Subtitle className="mb-2 text-muted small">
@@ -70,7 +70,7 @@ const PostCard = ({ post }) => {
                 <Card.Footer className="bg-white border-top-0">
                     <Button 
                         as={Link} 
-                        to={`/post/${post.slug}`} 
+                        to={`/posts/${post.slug}`} 
                         variant="outline-primary" 
                         size="sm"
                     >
