@@ -34,7 +34,7 @@ const Navbar = () => {
                                 </Button>
                             </>
                         ) : (
-                            <Nav.Link as={Link} to="/admin/login">Admin Login</Nav.Link>
+                            <Nav.Link as={Link} to="/admin/login">Login</Nav.Link>
                         )}
                     </Nav>
                 </BNavbar.Collapse>
