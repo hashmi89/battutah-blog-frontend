@@ -1,3 +1,8 @@
 body {
   margin: 0;
 }
+
+.text-primary.display-4,
+.text-primary.card-title {
+  color: #333 !important;
+}
