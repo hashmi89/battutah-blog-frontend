@@ -32,20 +32,6 @@ function Home() {
             });
     }, []);
 
-    // --- Rendering Logic ---
-
-    if (loading) {
-        return (
-            <div className="text-center my-5">
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading posts...</span>
-                </Spinner>
-            </div>
-        );
-    }
-
-    if (error) return <Alert variant="danger" className="m-5">{error}</Alert>;
-
     return (
         <Container className="my-5">
             <Card className="text-center bg-light mb-5 p-5 shadow-sm rounded-lg">
@@ -56,21 +42,32 @@ function Home() {
                     </p>
                 </Card.Body>
             </Card>
-            <h1 className="mb-4">Latest Blog Posts</h1>
 
-            {posts.length === 0 ? (
-                <Alert variant="info">
-                    No posts found. Use the Admin page to create your first post!
-                </Alert>
-            ) : (
-                // Use a Bootstrap Row to create the responsive grid
-                <Row className="g-4">
-                    {posts.map(post => (
-                        // Map over data and delegate rendering to the PostCard component
-                        // The PostCard component now handles HTML stripping for the summary
-                        <PostCard key={post._id} post={post} />
-                    ))}
-                </Row>
+            <h2 className="mb-4 text-muted border-bottom pb-2">Latest Posts</h2>
+
+            {loading && (
+                <div className="text-center my-5">
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading posts...</span>
+                    </Spinner>
+                </div>
+            )}
+
+            {error && <Alert variant="danger" className="m-5">{error}</Alert>}
+
+            {!loading && !error && (
+                posts.length === 0 ? (
+                    <Alert variant="info">
+                        No posts found. Use the Admin page to create your first post!
+                    </Alert>
+                ) : (
+                    // Use a Bootstrap Row to create the responsive grid
+                    <Row className="g-4">
+                        {posts.map(post => (
+                            <PostCard key={post._id} post={post} />
+                        ))}
+                    </Row>
+                )
             )}
         </Container>
     );
